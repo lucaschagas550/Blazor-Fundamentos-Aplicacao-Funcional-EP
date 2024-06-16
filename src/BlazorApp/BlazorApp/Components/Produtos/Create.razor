@@ -1,5 +1,7 @@
 ﻿@page "/produtos/novo"
+@attribute [Authorize]
 
+@using Microsoft.AspNetCore.Authorization
 @using BlazorApp.Components.Produtos
 
 @inject BlazorApp.Data.ApplicationDbContext DB

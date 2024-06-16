@@ -2,13 +2,15 @@
 
 @using Microsoft.AspNetCore.Authorization
 
-@attribute [Authorize]
+<!--Precisa estar autorizado para acessar esta rota -->
+@attribute [Authorize] 
 @rendermode InteractiveAuto
 
 <PageTitle>Auth</PageTitle>
 
 <h1>You are authenticated</h1>
 
+<!--AuthrizeView ele fornece o context, so esta sendo usando por isso, o atributo acima ja define que eh um componente que precisa de autorizacao-->
 <AuthorizeView>
     Hello @context.User.Identity?.Name!
 </AuthorizeView>

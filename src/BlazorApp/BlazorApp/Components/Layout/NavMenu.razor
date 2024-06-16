@@ -42,7 +42,10 @@
             </NavLink>
         </div>
 
+        <!--Verifica se usuario esta autorizado(logado)-->
         <AuthorizeView>
+
+            <!--Se estiver logado chamada esta view, se nao a outra, como se fosse um if-->
             <Authorized>
                 <div class="nav-item px-3">
                     <NavLink class="nav-link" href="Account/Manage">
