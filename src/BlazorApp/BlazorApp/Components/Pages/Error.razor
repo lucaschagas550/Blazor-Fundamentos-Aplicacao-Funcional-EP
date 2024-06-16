@@ -1,12 +1,14 @@
 ﻿@page "/Error"
+@page "/error/{code:int}"
+
 @using System.Diagnostics
 
 <PageTitle>Error</PageTitle>
 
-<h1 class="text-danger">Error.</h1>
+<h1 class="text-danger">Ocorreu um erro</h1>
 <h2 class="text-danger">An error occurred while processing your request.</h2>
 
-@if (ShowRequestId)
+@* @if (ShowRequestId)
 {
     <p>
         <strong>Request ID:</strong> <code>@RequestId</code>
@@ -23,14 +25,40 @@
     For local debugging, enable the <strong>Development</strong> environment by setting the <strong>ASPNETCORE_ENVIRONMENT</strong> environment variable to <strong>Development</strong>
     and restarting the app.
 </p>
+ *@
 
-@code{
+@code {
     [CascadingParameter]
     private HttpContext? HttpContext { get; set; }
 
+    [Parameter]
+    public int code { get; set; }
+
     private string? RequestId { get; set; }
     private bool ShowRequestId => !string.IsNullOrEmpty(RequestId);
+    string Message = string.Empty;
 
-    protected override void OnInitialized() =>
+    protected override void OnInitialized()
+    {
         RequestId = Activity.Current?.Id ?? HttpContext?.TraceIdentifier;
+
+        switch (code)
+        {
+            case 401:
+                Message = "Não te conheço";
+                break;
+            case 403:
+                Message = "Te conheço mas você não tem acesso!";
+                break;
+            case 404:
+                Message = "Página não encontrada";
+                break;
+            case 500:
+                Message = "Erro no servidor";
+                break;
+            default:
+                Message = "Erro desconhecido";
+                break;
+        }
+    }
 }

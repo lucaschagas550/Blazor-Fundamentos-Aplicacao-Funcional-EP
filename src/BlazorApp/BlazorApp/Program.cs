@@ -56,6 +56,9 @@ else
     app.UseHsts();
 }
 
+//Tratamento de erro
+app.UseStatusCodePagesWithReExecute("/error/{0}");
+
 app.UseHttpsRedirection();
 
 app.UseStaticFiles();
