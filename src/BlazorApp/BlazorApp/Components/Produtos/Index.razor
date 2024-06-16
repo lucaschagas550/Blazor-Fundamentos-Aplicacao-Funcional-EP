@@ -1,27 +1,44 @@
 ﻿@page "/produtos"
+
 @using Microsoft.AspNetCore.Components.QuickGrid
-@inject BlazorApp.Data.ApplicationDbContext DB
 @using BlazorApp.Components.Produtos
+@using System.Globalization
 
-<PageTitle>Index</PageTitle>
+@inject BlazorApp.Data.ApplicationDbContext DB
 
-<h1>Index</h1>
+<PageTitle>Produtos</PageTitle>
+
+<h1>Produtos</h1>
+<hr />
 
 <p>
-    <a href="produtos/novo">Create New</a>
+    <a class="btn btn-primary" href="produtos/novo"><spam class="fa fa-plus"></spam> Novo Produto</a>
 </p>
 
 <QuickGrid Class="table" Items="DB.Produto">
-    <PropertyColumn Property="produto => produto.Nome" />
-    <PropertyColumn Property="produto => produto.Descricao" />
-    <PropertyColumn Property="produto => produto.Categoria" />
-    <PropertyColumn Property="produto => produto.Preco" />
-    <PropertyColumn Property="produto => produto.DisponivelEstoque" />
-    <PropertyColumn Property="produto => produto.DataValidade" />
+    <PropertyColumn Align="Align.Center" Property="produto => produto.Nome" />
+    <PropertyColumn Align="Align.Center" Property="produto => produto.Categoria" />
 
-    <TemplateColumn Context="produto">
-        <a href="@($"produtos/editar/{produto.Id}")">Edit</a> |
-        <a href="@($"produtos/detalhes/{produto.Id}")">Details</a> |
-        <a href="@($"produtos/excluir/{produto.Id}")">Delete</a>
+    <TemplateColumn Align="Align.Center" Context="produto" Title="Preço">
+        @produto.Preco.ToString("C", new CultureInfo("pt-BR"))
+    </TemplateColumn>
+
+    <TemplateColumn Align="Align.Center" Context="produto" Title="Disponível">
+        @if (produto.DisponivelEstoque)
+        {
+            <i class="fa-solid fa-check"></i>
+        }
+        else
+        {
+            <i class="fa-solid fa-x"></i>
+        }
+    </TemplateColumn>
+
+    <PropertyColumn Align="Align.Center" Property="produto => produto.DataValidade" Format="dd-MM-yyyy" Title="Data de Validade" />
+
+    <TemplateColumn Align="Align.Center" Context="produto">
+        <a class="btn btn-info" href="@($"produtos/detalhes/{produto.Id}")"><spam class="fa fa-search"></spam></a>
+        <a class="btn btn-warning" href="@($"produtos/editar/{produto.Id}")"><spam class="fa fa-pencil-alt"></spam></a>
+        <a class="btn btn-danger" href="@($"produtos/excluir/{produto.Id}")"><spam class="fa fa-trash"></spam></a>
     </TemplateColumn>
 </QuickGrid>
