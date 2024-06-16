@@ -1,8 +1,10 @@
-﻿@page "/produtos/delete"
-@inject BlazorApp.Data.ApplicationDbContext DB
+﻿@page "/produtos/excluir/{id:int}"
+
 @using BlazorApp.Components.Produtos
-@inject NavigationManager NavigationManager
 @using Microsoft.EntityFrameworkCore
+
+@inject BlazorApp.Data.ApplicationDbContext DB
+@inject NavigationManager NavigationManager
 
 <PageTitle>Delete</PageTitle>
 
@@ -51,7 +53,8 @@
 @code {
     Produto? produto;
 
-    [SupplyParameterFromQuery]
+    // [SupplyParameterFromQuery] //Para pegar o valor da query como rota?teste=1
+    [Parameter]
     public int Id { get; set; }
 
     protected override async Task OnInitializedAsync()

@@ -8,7 +8,7 @@
 <h1>Index</h1>
 
 <p>
-    <a href="produtos/create">Create New</a>
+    <a href="produtos/novo">Create New</a>
 </p>
 
 <QuickGrid Class="table" Items="DB.Produto">
@@ -20,8 +20,8 @@
     <PropertyColumn Property="produto => produto.DataValidade" />
 
     <TemplateColumn Context="produto">
-        <a href="@($"produtos/edit?id={produto.Id}")">Edit</a> |
-        <a href="@($"produtos/details?id={produto.Id}")">Details</a> |
-        <a href="@($"produtos/delete?id={produto.Id}")">Delete</a>
+        <a href="@($"produtos/editar/{produto.Id}")">Edit</a> |
+        <a href="@($"produtos/detalhes/{produto.Id}")">Details</a> |
+        <a href="@($"produtos/excluir/{produto.Id}")">Delete</a>
     </TemplateColumn>
 </QuickGrid>

@@ -1,8 +1,12 @@
-﻿@page "/Produtos/edit"
-@inject BlazorApp.Data.ApplicationDbContext DB
-@using BlazorApp.Components.Produtos
-@inject NavigationManager NavigationManager
+﻿@page "/produtos/editar/{id:int}"
+@attribute [StreamRendering]
+
+@using Microsoft.AspNetCore.Authorization
 @using Microsoft.EntityFrameworkCore
+@using BlazorApp.Components.Produtos
+
+@inject NavigationManager NavigationManager
+@inject BlazorApp.Data.ApplicationDbContext DB
 
 <PageTitle>Edit</PageTitle>
 
@@ -21,56 +25,73 @@ else
             <EditForm method="post" Model="Produto" OnValidSubmit="UpdateProduto" FormName="edit" Enhance>
                 <DataAnnotationsValidator />
                 <ValidationSummary />
+
                 <input type="hidden" name="Produto.Id" value="@Produto.Id" />
+
                 <div class="mb-3">
                     <label for="nome" class="form-label">Nome:</label>
                     <InputText id="nome" @bind-Value="Produto.Nome" class="form-control" />
                     <ValidationMessage For="() => Produto.Nome" class="text-danger" />
                 </div>
+
                 <div class="mb-3">
                     <label for="descricao" class="form-label">Descricao:</label>
                     <InputText id="descricao" @bind-Value="Produto.Descricao" class="form-control" />
                     <ValidationMessage For="() => Produto.Descricao" class="text-danger" />
                 </div>
+
                 <div class="mb-3">
-                    <label for="categoria" class="form-label">Categoria:</label>
-                    <InputText id="categoria" @bind-Value="Produto.Categoria" class="form-control" />
-                    <ValidationMessage For="() => Produto.Categoria" class="text-danger" />
+                    <label class="form-label">
+                        Categoria:
+                        <InputSelect class="form-select" @bind-Value="Produto!.Categoria" >
+                            <option value="">Selecione uma categoria...</option>
+                            @foreach (var categoria in Categorias)
+                            {
+                                <option value="@categoria">@categoria</option>
+                            }
+                        </InputSelect>
+                    </label>
                 </div>
+
                 <div class="mb-3">
                     <label for="preco" class="form-label">Preco:</label>
                     <InputNumber id="preco" @bind-Value="Produto.Preco" class="form-control" />
                     <ValidationMessage For="() => Produto.Preco" class="text-danger" />
                 </div>
+
                 <div class="mb-3">
                     <label for="disponivelestoque" class="form-label">DisponivelEstoque:</label>
                     <InputCheckbox id="disponivelestoque" @bind-Value="Produto.DisponivelEstoque" class="form-check-input" />
                     <ValidationMessage For="() => Produto.DisponivelEstoque" class="text-danger" />
                 </div>
+
                 <div class="mb-3">
                     <label for="datavalidade" class="form-label">DataValidade:</label>
                     <InputDate id="datavalidade" @bind-Value="Produto.DataValidade" class="form-control" />
                     <ValidationMessage For="() => Produto.DataValidade" class="text-danger" />
                 </div>
-                <button type="submit" class="btn btn-primary">Save</button>
+
+                <button type="submit" class="btn btn-primary">Salvar</button>&nbsp;
+                <a class="btn btn-warning" href="/produtos">Voltar</a>
+
             </EditForm>
         </div>
     </div>
 }
 
-<div>
-    <a href="/produtos">Back to List</a>
-</div>
-
 @code {
-    [SupplyParameterFromQuery]
-    public int Id { get; set; }
+        [Parameter]
+        public int Id { get; set; }
 
-    [SupplyParameterFromForm]
-    public Produto? Produto { get; set; }
+        [SupplyParameterFromForm]
+        public Produto? Produto { get; set; }
+
+    private readonly List<string> Categorias = new() { "Eletrônicos", "Vestuário", "Alimentos" };
 
     protected override async Task OnInitializedAsync()
     {
+        //Precisa do StreamRendering para o loading... aparecer enquanto nao voltou os dados do banco, se n, ele so aparece se nao tiver nenhum produto
+        await Task.Delay(1000).ConfigureAwait(false);
         Produto ??= await DB.Produto.FirstOrDefaultAsync(m => m.Id == Id);
 
         if (Produto is null)
@@ -79,8 +100,6 @@ else
         }
     }
 
-    // To protect from overposting attacks, enable the specific properties you want to bind to.
-    // For more details, see https://aka.ms/RazorPagesCRUD.
     public async Task UpdateProduto()
     {
         DB.Attach(Produto!).State = EntityState.Modified;
